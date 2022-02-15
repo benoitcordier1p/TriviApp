@@ -17,7 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -118,17 +117,18 @@ fun CategoryList(
 @Composable
 fun CategoryItem(name: String, id: Int,onSelectCat : ((Int)->Unit)) {
     Card(
+        elevation = 8.dp,
         modifier = Modifier
             .clickable { onSelectCat(id) }
-            .size(60.dp)
-            .background(MaterialTheme.colors.surface)
+            .size(90.dp)
+            .padding(15.dp)
             .border(
                 width = 4.dp,
                 color = MaterialTheme.colors.secondary,
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(0.dp)
             )
-            .padding(12.dp),
-        elevation = 8.dp,
+
+
     ) {
         Text(
             text = name,
@@ -152,21 +152,20 @@ fun DifficultyList(
             Card(
                 modifier = Modifier
                     .clickable { navigationController.navigate("Question/$cat/$it") }
-                    .width(100.dp)
-                    .height(40.dp)
-                    .background(MaterialTheme.colors.surface)
+                    .width(120.dp)
+                    .padding(15.dp)
                     .border(
                         width = 4.dp,
                         color = MaterialTheme.colors.secondary,
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(0.dp)
                     )
-                    .padding(top = 10.dp),
+                ,
                 elevation = 8.dp,
             ) {
                 Text(
                     text = it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize().padding(top = 5.dp)
                 )
             }
         }

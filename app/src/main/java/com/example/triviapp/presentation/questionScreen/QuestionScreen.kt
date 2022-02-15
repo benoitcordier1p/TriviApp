@@ -34,7 +34,8 @@ fun QuestionScreen(
                 QuestionItem(
                     it,
                     navController,
-                    (0 until question.question.results[0].incorrect_answers.size).random()
+                    (0 until question.question.results[0].incorrect_answers.size).random(),
+                    viewModel = questionViewModel
                 )
             }
     }
@@ -45,7 +46,8 @@ fun QuestionScreen(
 fun QuestionItem(
     question : Question,
     navController: NavController,
-    correctPosition : Int
+    correctPosition : Int,
+    viewModel: QuestionViewModel
 ){
 
     val pressed = remember { mutableStateOf(false)}
@@ -56,7 +58,7 @@ fun QuestionItem(
     ) {
         Card(elevation = 8.dp) {
             Text(
-                text=question.results[0].question,
+                text=viewModel.decodedQuestion(question.results[0].question),
                 style = MaterialTheme.typography.h6,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(8.dp)
