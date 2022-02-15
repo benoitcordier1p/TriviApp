@@ -35,7 +35,10 @@ class QuestionViewModel @Inject constructor(
         viewModelScope.launch {
             getQuestionUseCase(diff,cat).collect {
                 _state.value = when (it) {
-                    is Resource.Success -> QuestionState(false,it.data,"")
+                    is Resource.Success -> {
+                        println(it.data)
+                        QuestionState(false,it.data,"")
+                    }
                     is Resource.Loading -> QuestionState(true,null,"")
                     is Resource.Error -> QuestionState(false,null,it.message!!)
                 }

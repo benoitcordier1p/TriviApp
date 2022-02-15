@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -33,7 +34,8 @@ fun QuestionScreen(
                 QuestionItem(
                     it,
                     navController,
-                    (0 until question.question.results[0].incorrect_answers.size).random())
+                    (0 until question.question.results[0].incorrect_answers.size).random()
+                )
             }
     }
 }
@@ -89,9 +91,11 @@ fun QuestionItem(
 
         }
         if(pressed.value){
-            Button(onClick = {
+            Button(
+                onClick = {
                 navController.navigate("Menu")
-            }) {
+                })
+            {
                 Text(text = "Next")
             }
         }
