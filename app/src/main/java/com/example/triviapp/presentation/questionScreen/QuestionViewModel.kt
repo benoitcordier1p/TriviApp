@@ -49,6 +49,9 @@ class QuestionViewModel @Inject constructor(
     fun decodedQuestion(question : String) : String {
         return question
             .replace("&#039;","'")
+            .replace("&#038;","&")
+            .replace("&#040;","(")
+            .replace("&#041;",")")
             .replace("&quot;","\"")
     }
 }

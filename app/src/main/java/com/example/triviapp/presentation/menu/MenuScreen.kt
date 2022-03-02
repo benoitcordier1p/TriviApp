@@ -10,13 +10,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,8 @@ fun MenuScreen(
     val state = remember { menuViewModel.state }
     val selected = remember { mutableStateOf(false)}
     val category = remember { mutableStateOf(0)}
+    val listOfIds = remember { menuViewModel.listOfIds}
+    val randomSelection = remember{menuViewModel.randomSelection}
 
     Column(
         modifier = Modifier
@@ -56,13 +59,30 @@ fun MenuScreen(
                 onSelectCat = {
                     category.value = it
                     selected.value = true
-                }
+                },
+                listCat = listOfIds,
+                randomSelection = randomSelection.value
             )
         } else {
-            DifficultyList(
-                navigationController = navigationController,
-                cat = category.value.toString()
-            )
+            if(category.value!=-1){
+                DifficultyList(
+                    navigationController = navigationController,
+                    cat = category.value.toString()
+                )
+            } else {
+                LaunchedEffect(key1 = Unit, block = {
+                    menuViewModel.randomSelection()
+                })
+                CategoryList(
+                    state = state,
+                    onSelectCat = {
+                        category.value = it
+                        selected.value = true
+                    },
+                    listCat = listOfIds,
+                    randomSelection = randomSelection.value
+                )
+            }
         }
     }
 }
@@ -72,8 +92,18 @@ fun MenuScreen(
 @Composable
 fun CategoryList(
     state : State<CategoryState>,
-    onSelectCat: (Int) -> Unit
+    onSelectCat: (Int) -> Unit,
+    listCat : List<Int>,
+    randomSelection : Int
 ){
+    if(listCat.isNotEmpty()){
+        CategoryItem(
+            name = "Random",
+            id = -1,
+            onSelectCat = { cat -> onSelectCat(cat) },
+            selected = false
+        )
+    }
     LazyVerticalGrid(
         cells = GridCells.Fixed(2),
         modifier = Modifier
@@ -85,7 +115,8 @@ fun CategoryList(
             CategoryItem(
                 name = it.name,
                 id = it.id,
-                onSelectCat = { cat -> onSelectCat(cat) }
+                onSelectCat = { cat -> onSelectCat(cat) },
+                selected = it.id==randomSelection
             )
         }
 
@@ -114,10 +145,18 @@ fun CategoryList(
     }
 }
 
+
+
 @Composable
-fun CategoryItem(name: String, id: Int,onSelectCat : ((Int)->Unit)) {
+fun CategoryItem(
+    name: String,
+    id: Int,
+    onSelectCat : ((Int)->Unit),
+    selected :Boolean) {
     Card(
         elevation = 8.dp,
+        backgroundColor =  if(selected) MaterialTheme.colors.background
+        else Color.White,
         modifier = Modifier
             .clickable { onSelectCat(id) }
             .size(90.dp)
@@ -127,8 +166,6 @@ fun CategoryItem(name: String, id: Int,onSelectCat : ((Int)->Unit)) {
                 color = MaterialTheme.colors.secondary,
                 shape = RoundedCornerShape(0.dp)
             )
-
-
     ) {
         Text(
             text = name,
@@ -165,7 +202,9 @@ fun DifficultyList(
                 Text(
                     text = it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxSize().padding(top = 5.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 5.dp)
                 )
             }
         }
