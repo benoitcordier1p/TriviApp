@@ -48,7 +48,8 @@ fun MenuScreen(
             text = "TriviApp",
             style = MaterialTheme.typography.h3,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colors.surface
         )
 
         Spacer(modifier = Modifier.height(30.dp))
@@ -96,30 +97,34 @@ fun CategoryList(
     listCat : List<Int>,
     randomSelection : Int
 ){
-    if(listCat.isNotEmpty()){
-        CategoryItem(
-            name = "Random",
-            id = -1,
-            onSelectCat = { cat -> onSelectCat(cat) },
-            selected = false
-        )
-    }
+
     LazyVerticalGrid(
         cells = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colors.background)
     ) {
-
-        items(state.value.category.trivia_categories) {
-            CategoryItem(
-                name = it.name,
-                id = it.id,
-                onSelectCat = { cat -> onSelectCat(cat) },
-                selected = it.id==randomSelection
-            )
+        if(listCat.isNotEmpty()){
+            item {
+                CategoryItem(
+                    name = "Random",
+                    id = -1,
+                    onSelectCat = { cat -> onSelectCat(cat) },
+                    selected = false
+                )
+            }
+            item {
+                CompetitionItem(name = "Duel")
+            }
+            items(state.value.category.trivia_categories) {
+                CategoryItem(
+                    name = it.name,
+                    id = it.id,
+                    onSelectCat = { cat -> onSelectCat(cat) },
+                    selected = it.id==randomSelection
+                )
+            }
         }
-
     }
 
     Column {
@@ -154,25 +159,43 @@ fun CategoryItem(
     onSelectCat : ((Int)->Unit),
     selected :Boolean) {
     Card(
-        elevation = 8.dp,
-        backgroundColor =  if(selected) MaterialTheme.colors.background
-        else Color.White,
+        elevation = 0.dp,
         modifier = Modifier
             .clickable { onSelectCat(id) }
             .size(90.dp)
-            .padding(15.dp)
-            .border(
-                width = 4.dp,
-                color = MaterialTheme.colors.secondary,
-                shape = RoundedCornerShape(0.dp)
-            )
+            .padding(15.dp),
+        backgroundColor =  if(selected) MaterialTheme.colors.secondary
+        else MaterialTheme.colors.primary,
     ) {
         Text(
             text = name,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 10.dp)
+                .padding(top = 10.dp),
+            color = MaterialTheme.colors.surface
+        )
+    }
+}
+
+@Composable
+fun CompetitionItem(
+    name: String) {
+    Card(
+        elevation = 8.dp,
+        modifier = Modifier
+            .clickable {  }
+            .size(90.dp)
+            .padding(15.dp),
+        backgroundColor =  MaterialTheme.colors.primary,
+    ) {
+        Text(
+            text = name,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 10.dp),
+            color = MaterialTheme.colors.surface
         )
     }
 }
@@ -190,21 +213,17 @@ fun DifficultyList(
                 modifier = Modifier
                     .clickable { navigationController.navigate("Question/$cat/$it") }
                     .width(120.dp)
-                    .padding(15.dp)
-                    .border(
-                        width = 4.dp,
-                        color = MaterialTheme.colors.secondary,
-                        shape = RoundedCornerShape(0.dp)
-                    )
-                ,
+                    .padding(15.dp),
                 elevation = 8.dp,
+                backgroundColor = MaterialTheme.colors.primary
             ) {
                 Text(
                     text = it.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 5.dp)
+                        .padding(top = 5.dp),
+                    color = MaterialTheme.colors.surface
                 )
             }
         }

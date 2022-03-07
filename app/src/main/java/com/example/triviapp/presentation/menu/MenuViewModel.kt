@@ -1,15 +1,14 @@
 package com.example.triviapp.presentation.menu
 
-import android.os.CountDownTimer
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triviapp.data.models.Categories
-import com.example.triviapp.data.models.TriviaCategory
 import com.example.triviapp.domain.use_cases.GetCategoriesUseCase
 import com.example.triviapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,10 +49,12 @@ class MenuViewModel @Inject constructor(
     }
 
     fun randomSelection(){
-        var index=0
-        val time = (3000..10000).random().toLong()
-        val timer = object: CountDownTimer(time, 100) {
-            override fun onTick(p0: Long) {
+        viewModelScope.launch {
+            var index=0
+            val time = (24..48).random()
+            var i=0
+            var delay=5
+            while(i<time){
                 if(index<listOfIds.size-1) {
                     randomSelection.value=listOfIds[index]
                 }
@@ -62,12 +63,10 @@ class MenuViewModel @Inject constructor(
                     listOfIds[index]
                 }
                 index += 1
-            }
-
-            override fun onFinish() {
-
+                i+=1
+                delay(delay.toLong())
+                delay+=10
             }
         }
-        timer.start()
     }
 }

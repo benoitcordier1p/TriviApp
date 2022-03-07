@@ -56,12 +56,14 @@ fun QuestionItem(
         .fillMaxSize()
         .padding(horizontal = 15.dp, vertical = 25.dp)
     ) {
-        Card(elevation = 8.dp) {
+        Card(elevation = 8.dp,
+            backgroundColor = MaterialTheme.colors.primary) {
             Text(
                 text=viewModel.decodedQuestion(question.results[0].question),
                 style = MaterialTheme.typography.h6,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(8.dp),
+                color = MaterialTheme.colors.surface
             )
         }
         Spacer(modifier = Modifier.height(40.dp))
